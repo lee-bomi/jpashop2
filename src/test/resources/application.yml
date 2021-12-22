@@ -1,0 +1,19 @@
+spring:
+#  datasource:
+#    url: jdbc:h2:mem:test #메모리모드로 구동하게됨(별도의 설정 없으면 메모리모드로 돌린다)
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver       #database connection 관련 소스가 설정됨(hikari cp사용)
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    properties:         #hibernate관련 특정 프로퍼티 사용가능
+#      hibernate:
+#        show_sql: true  #운영환경에선 쓰지않는다
+#        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug        #logger에 찍는다
+    org.hibernate.type: trace       #로그에 ?로 찍힌거 밑에 trace란에 안의 내용을 보여준다
