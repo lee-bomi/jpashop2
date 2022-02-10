@@ -39,4 +39,11 @@ public class MemberService {
     public Member findOne(Long id) {
         return memberRepository.find(id);
     }
+
+    //회원정보수정
+    @Transactional
+    public void update(Long id, String name) {
+        Member member = memberRepository.find(id);
+        member.setName(name);
+    }
 }
