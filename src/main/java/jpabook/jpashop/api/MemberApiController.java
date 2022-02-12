@@ -4,10 +4,13 @@ import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 //회원등록api
 @RestController
@@ -15,6 +18,35 @@ import javax.validation.Valid;
 public class MemberApiController {
 
     private final MemberService memberService;
+
+    @GetMapping("/api/v1/members")  //응답값으로 엔티티를 직접 외부에 노출함(@JsonIgnore로 당장은 해결가능하지만..이api를 어디서 쓸지모르니까)
+    public List<Member> membersV1() {
+        return memberService.findMembers();
+    }
+
+    @GetMapping("/api/v2/members")
+    public Result memberV2() {
+        List<Member> findMembers = memberService.findMembers();
+        List<MemberDto> collect = findMembers.stream()
+                .map(m -> new MemberDto(m.getName()))
+                .collect(Collectors.toList());          //결과값을 Member -> MemberDto로 변경함
+
+        return new Result(collect);
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class MemberDto {
+        private String name;
+    }
+
+
 
     @PostMapping("/api/v1/members/{id}")
     public CreateMemberResponse saveMemberV1(@RequestBody @Valid Member member) {
@@ -45,6 +77,7 @@ public class MemberApiController {
 
     @Data
     @AllArgsConstructor
+
     static class UpdateMemberResponse {
         private Long id;
         private String name;
