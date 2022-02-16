@@ -5,6 +5,8 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
     @GetMapping("/api/v1/simple-orders")
     public List<Order> ordersV1() {
@@ -30,7 +33,7 @@ public class OrderSimpleApiController {
         return all;
     }
 
-    @GetMapping("/api/V3/simple-orders")    //엔티티를 DTO로 전환 But LAZY로딩으로 인해 쿼리가 너무많이나가서 성능이 떨어짐
+    @GetMapping("/api/V2/simple-orders")    //엔티티를 DTO로 전환 But LAZY로딩으로 인해 쿼리가 너무많이나가서 성능이 떨어짐
     public List<SimpleOrderDto> ordersV2() {
         List<Order> orders = orderRepository.findAllByString(new OrderSearch());
         List<SimpleOrderDto> result = orders.stream()
@@ -38,6 +41,21 @@ public class OrderSimpleApiController {
                 .collect(Collectors.toList());
 
         return result;
+    }
+
+    @GetMapping("/api/V3/simple-orders")    //v2와 결과는 같지만, 나가는 쿼리가 다르다(fetch join)
+    public List<SimpleOrderDto> ordersV3(){
+        List<Order> orders = orderRepository.findAllWithMemberDelivery();   //쿼리1번나감 / fetch join으로 이미 조회가 된 상태이므로 member, delivery가 지연로딩되지않는다
+        List<SimpleOrderDto> result = orders.stream()
+                .map(o -> new SimpleOrderDto(o))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    @GetMapping("/api/V3/simple-orders")    //엔티티 -> DTO변환필요없이 ENTITY에서 바로 DTO로 가져옴으로써 성능최적회가능
+    public List<OrderSimpleQueryDto> ordersV4() {
+        return orderSimpleQueryRepository.findOrderDtos();
     }
 
     @Data
