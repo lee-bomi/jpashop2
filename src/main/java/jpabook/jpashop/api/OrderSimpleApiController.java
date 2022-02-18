@@ -53,7 +53,7 @@ public class OrderSimpleApiController {
         return result;
     }
 
-    @GetMapping("/api/V3/simple-orders")    //엔티티 -> DTO변환필요없이 ENTITY에서 바로 DTO로 가져옴으로써 성능최적회가능
+    @GetMapping("/api/V4/simple-orders")    //엔티티 -> DTO변환필요없이 ENTITY에서 바로 DTO로 가져옴으로써 성능최적회가능
     public List<OrderSimpleQueryDto> ordersV4() {
         return orderSimpleQueryRepository.findOrderDtos();
     }

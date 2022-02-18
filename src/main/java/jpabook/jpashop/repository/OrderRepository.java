@@ -114,7 +114,7 @@ public class OrderRepository {
                         "select distinct o from Order o" +
                                 " join fetch o.member m" +
                                 " join fetch o.delivery d" +
-                                " join fetch o.orderItems oi" +
+                                " join fetch o.orderItems oi" +     //데이터양이 많아진다
                                 " join fetch oi.item i", Order.class)
                 .getResultList();
     }

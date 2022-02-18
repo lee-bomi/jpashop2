@@ -12,6 +12,7 @@ spring:
       hibernate:
 #        show_sql: true  #운영환경에선 쓰지않는다
         format_sql: true
+        default_batch_fetch_size: 100
 
 logging:
   level:
